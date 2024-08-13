@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                        String              @id @default(cuid())
+  address                   String              @unique
+  chainId                   Int
+  interactedDeployments     Deployment[]        @relation("UserinteractedDeployments")
+  createdDeployments        Deployment[]        @relation("UsercreatedDeployments")
+  createdVaults             FundingVault[]
+  transactions              Transaction[]
+  vaultInteractions         VaultInteraction[]
+}
+
+model Deployment {
+  id                     String         @id @default(cuid())
+  name                   String
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  createdBy              User           @relation("UsercreatedDeployments", fields: [createdById], references: [id])
+  createdById            String
+  interactions           Interaction[]
+  erc20Token             ERC20Token     @relation(fields: [erc20TokenId], references: [id])
+  erc20TokenId           String
+  fundingVault           FundingVault   @relation(fields: [fundingVaultId], references: [id])
+  fundingVaultId         String
+  transactions           Transaction[]
+  users                  User[]         @relation("UserinteractedDeployments")
+}
+
+model ERC20Token {
+  id                     String         @id @default(cuid())
+  address                String          @unique
+  deployments            Deployment[]
+}
+
+model Transaction {
+  id                     String         @id @default(cuid())
+  deployment             Deployment     @relation(fields: [deploymentId], references: [id])
+  deploymentId           String
+  user                   User           @relation(fields: [userId], references: [id])
+  userId                 String
+  createdAt              DateTime       @default(now())
+}
+
+model Interaction {
+  id                     String         @id @default(cuid())
+  type                   String         // e.g., "fission" or "fusion"
+  deployment             Deployment     @relation(fields: [deploymentId], references: [id])
+  deploymentId           String
+  createdAt              DateTime       @default(now())
+}
+
+model FundingVault {
+  id                     String         @id @default(cuid())
+  name                   String
+  createdBy              User           @relation(fields: [createdById], references: [id])
+  createdById            String
+  createdAt              DateTime       @default(now())
+  totalDeposited         Float          @default(0.0)
+  interactions           VaultInteraction[]
+  deployments            Deployment[]
+}
+
+model VaultInteraction {
+  id                     String         @id @default(cuid())
+  user                   User           @relation(fields: [userId], references: [id])
+  userId                 String
+  vault                  FundingVault   @relation(fields: [vaultId], references: [id])
+  vaultId                String
+  amount                 Float
+  createdAt              DateTime       @default(now())
+}
