@@ -38,6 +38,7 @@ model Deployment {
   fundingVaultId         String
   transactions           Transaction[]
   users                  User[]         @relation("UserinteractedDeployments")
+  description            String?
 }
 
 model ERC20Token {
