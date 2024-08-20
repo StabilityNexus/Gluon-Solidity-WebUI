@@ -34,8 +34,7 @@ model Deployment {
   interactions           Interaction[]
   erc20Token             ERC20Token     @relation(fields: [erc20TokenId], references: [id])
   erc20TokenId           String
-  fundingVault           FundingVault   @relation(fields: [fundingVaultId], references: [id])
-  fundingVaultId         String
+  fundingVaults          DeploymentFundingVault[]
   transactions           Transaction[]
   users                  User[]         @relation("UserinteractedDeployments")
   description            String?
@@ -72,7 +71,7 @@ model FundingVault {
   createdAt              DateTime       @default(now())
   totalDeposited         Float          @default(0.0)
   interactions           VaultInteraction[]
-  deployments            Deployment[]
+  deployments            DeploymentFundingVault[]
 }
 
 model VaultInteraction {
@@ -83,4 +82,12 @@ model VaultInteraction {
   vaultId                String
   amount                 Float
   createdAt              DateTime       @default(now())
+}
+
+model DeploymentFundingVault {
+  deploymentId           String
+  fundingVaultId         String
+  deployment             Deployment     @relation(fields: [deploymentId], references: [id])
+  fundingVault           FundingVault   @relation(fields: [fundingVaultId], references: [id])
+  @@id([deploymentId, fundingVaultId])
 }
