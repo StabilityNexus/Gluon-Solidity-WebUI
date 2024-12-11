@@ -9,6 +9,11 @@ declare interface Route {
     }[];
 }
 
+declare interface Chain {
+    value: string;
+    label: string;
+}
+
 declare module 'lucide-react/dist/esm/icons/*' {
     import { LucideIcon } from 'lucide-react';
     const icon: LucideIcon;

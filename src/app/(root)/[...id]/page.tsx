@@ -1,9 +1,10 @@
+import { notFound } from 'next/navigation'
 import InteractionClient from './interaction-client';
 
 // Workaround to generate a static path for all deployments for Next.js
 export function generateStaticParams() {
     return [
-        { id: ['address'] }, // Single static path for all deployments
+        { id: ['g'] }, // Static path for catch-all
     ];
 }
 
@@ -14,6 +15,9 @@ export default function InteractionsPage({
         id: string[];
     };
 }) {
-    const deploymentAddress = params.id[0];
-    return <InteractionClient initialAddress={deploymentAddress} />;
+    const [prefix, chainId, contractAddress] = params.id;
+    if (prefix !== 'g') {
+        return notFound()
+    }
+    return <InteractionClient initialChainId={chainId} initialAddress={contractAddress} />;
 }

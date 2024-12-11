@@ -3,10 +3,11 @@
 import Link from "next/link";
 
 interface FooterProps {
+  chainId: string;
   deploymentAddress: string;
 }
 
-const Footer: React.FC<FooterProps> = ({ deploymentAddress }) => {
+const Footer: React.FC<FooterProps> = ({ chainId, deploymentAddress }) => {
   return (
     <footer className="mt-10 p-4 bg-gray-100 dark:bg-neutral-900 text-center rounded-lg shadow-md">
       <div className="flex justify-center space-x-2 mt-1">

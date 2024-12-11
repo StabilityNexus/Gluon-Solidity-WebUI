@@ -7,8 +7,10 @@ import Metrics from "./metrics";
 import Footer from "./footer";
 
 export default function Interaction({
+  chainId,
   deploymentAddress,
 }: {
+  chainId: string;
   deploymentAddress: string;
 }) {
   const [operation, setOperation] = useState<
@@ -179,7 +181,7 @@ export default function Interaction({
           <Metrics metrics={metrics} />
         </div>
       </div>
-      <Footer deploymentAddress={deploymentAddress} />
+      <Footer chainId={chainId} deploymentAddress={deploymentAddress} />
     </>
   );
 }
